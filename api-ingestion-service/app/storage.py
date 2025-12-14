@@ -17,3 +17,4 @@ def upload_to_landing(partner, dataset, filename, data):
         blob=blob_path
     )
     blob_client.upload_blob(data, overwrite=True)
+    return blob_path
