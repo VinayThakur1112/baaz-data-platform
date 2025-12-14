@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: baaz-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: baaz-api
+  template:
+    metadata:
+      labels:
+        app: baaz-api
+    spec:
+      containers:
+      - name: api
+        image: baazcontainers.azurecr.io/baaz-api-data-ingestion:1.6
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+        env:
+        - name: AZURE_STORAGE_ACCOUNT
+          valueFrom:
+            secretKeyRef:
+              name: storage-secret
+              key: account
+        - name: AZURE_STORAGE_KEY
+          valueFrom:
+            secretKeyRef:
+              name: storage-secret
+              key: key
+        - name: API_KEYS
+          valueFrom:
+            secretKeyRef:
+              name: api-keys-secret
+              key: API_KEYS

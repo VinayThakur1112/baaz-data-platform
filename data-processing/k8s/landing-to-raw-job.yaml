@@ -1,0 +1,38 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: landing-to-raw-job
+  namespace: baaz-platform
+spec:
+  backoffLimit: 3
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: landing-to-raw
+        image: baazcontainers.azurecr.io/baaz-data-processing:latest
+        imagePullPolicy: Always
+
+        env:
+        - name: AZURE_STORAGE_ACCOUNT
+          valueFrom:
+            secretKeyRef:
+              name: storage-secret
+              key: AZURE_STORAGE_ACCOUNT
+
+        - name: AZURE_STORAGE_KEY
+          valueFrom:
+            secretKeyRef:
+              name: storage-secret
+              key: AZURE_STORAGE_KEY
+
+        - name: SOURCE
+          value: "northwind"
+
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "1Gi"
+          limits:
+            cpu: "1"
+            memory: "2Gi"
